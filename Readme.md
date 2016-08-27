@@ -10,15 +10,15 @@
 - Download Liberty , from [WASdev](https://developer.ibm.com/wasdev/getstarted/)
   - Unzip in a folder that would be the new WLP_USER_DIR
   - ~~create the instance with~~ ~~`bin\server.bat create odm`~~, you may use this zipped repo or checkout/clone git under usr/ folder.
+      - This will set the a new server called : *odm*
   - run `bin/installUtility install odm`,  to install all features that are referenced by this configuration 
-  - Edit servers/odm/server.env to adjust  `JAVA_HOME` , `ODM_HOME` .
+  - Edit servers/odm/server.env to adjust  `JAVA_HOME` , and servers/odm/bootstrap.properties for  `ODM_HOME` .
 
 
 ### Liberty features and add-ons
- Some optional features are installed to ease deployment and use :
- - ~~adminCenter~~ ref to [Admin Center in WASdev](https://developer.ibm.com/wasdev/downloads/#asset/features-com.ibm.websphere.appserver.adminCenter-1.0) 
- - ~~LDAP~~ ref to [LDAP in WASdev](https://developer.ibm.com/wasdev/downloads/#asset/features-com.ibm.websphere.appserver.ldapRegistry-3.0)
-
+ Some optional features are available to ease deployment and use :
+ - adminCenter ref to [Admin Center in WASdev](https://developer.ibm.com/wasdev/downloads/#asset/features-com.ibm.websphere.appserver.adminCenter-1.0) 
+ 
 ### Start & stop
 - Start with `server.bat run odm`
 - Stop with `server.bat stop odm`
@@ -41,7 +41,7 @@ Two approaches, zeroconf or permanent. Although created for ODM88 branch, just c
 ### LDAP 
 
 LDAP support is added to Liberty through a [feature](https://developer.ibm.com/wasdev/downloads/#asset/features-com.ibm.websphere.appserver.ldapRegistry-3.0)
-
+Get Git branch tagged with LDAP
 
 The configured DB is embedded Derby stored in /data, other JDBC jars should be added in /lib.
 There is also a setup to use Derby Network server with startDeby.bat/stopDerby.bat, adjust the datasource definition accordingly.

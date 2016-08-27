@@ -1,20 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<server description="new server">
+<?xml version="1.0" encoding="UTF-8"?><server description="ODM Server">
 
     <!-- Enable features -->
     <featureManager>
-       <!-- <feature>javaee-7.0</feature>
-        TJ test with javaee 7
-        <feature>servlet-3.1</feature>
-		<feature>jsp-2.2</feature>
-		<feature>jdbc-4.1</feature>
-		<feature>appSecurity-2.0</feature>
-		<feature>jaxrs-1.1</feature>
-		<feature>concurrent-1.0</feature>
-		<feature>jndi-1.0</feature>
-		<feature>ssl-1.0</feature>
 
-        -->
         <feature>servlet-3.0</feature>
 		<feature>jsp-2.2</feature>
 		<feature>jdbc-4.0</feature>
@@ -23,6 +11,9 @@
 		<feature>concurrent-1.0</feature>
 		<feature>jndi-1.0</feature>
 		<feature>ssl-1.0</feature>
+		<!--Admin Center-->
+		<feature>adminCenter-1.0</feature>
+		<feature>requestTiming-1.0</feature>
     </featureManager>
 
     <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
@@ -39,6 +30,9 @@
         generate an encoded password using bin/securityUtility encode and add it in the password attribute of the user element. 
         Then uncomment the user element. -->
     <basicRegistry id="basic" realm="BasicRealm"> 
+		<!--TJ Added Admin Center account-->
+		<user name="admin" password="password"/>
+
         <user name="resAdmin" password="resAdmin"/>
 		<user name="resDeployer" password="resDeployer"/>
 		<user name="resMonitor" password="resMonitor"/>
@@ -143,13 +137,16 @@
 		<group name="ruleEditor">
 			<member name="jack"/>
 		</group>
+		<!--TJ Added Admin Center group-->
+		<group name="myAdmins">
+          <member name="admin"/>
+          <member name="rtsAdmin"/>
+       </group>		
     </basicRegistry>
     
     <httpSession cookieName="DCSESSIONID"/>
     <!-- To access this server from a remote client add a host attribute to the following element, e.g.  -->
-    <httpEndpoint id="defaultHttpEndpoint" host="*"
-                  httpPort="9080" httpsPort="9443"
-                  enableWelcomePage="true" onError="FAIL">
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" enableWelcomePage="true" onError="FAIL">
 		<tcpOptions soReuseAddr="true"/>
 	</httpEndpoint>
                   
@@ -160,14 +157,11 @@
 	<fileset id="DerbyFileset" dir="${shared.resource.dir}" includes="derby.jar"/>
     <!-- RES datasource -->
 	<dataSource id="jdbc/resdatasource" jndiName="jdbc/resdatasource" jdbcDriverRef="DerbyJdbcDriver">
-		<properties databaseName="${server.config.dir}/derby/resDatabase/resdb" createDatabase="create"
-			 user="RES" password="RES"/>
+		<properties databaseName="${server.config.dir}/derby/resDatabase/resdb" createDatabase="create" user="RES" password="RES"/>
 	</dataSource>
 	<!-- ILOG datasource -->
-	<dataSource id="derbyEmbedded" isolationLevel="TRANSACTION_READ_COMMITTED" jndiName="jdbc/ilogDataSource"
-		 jdbcDriverRef="DerbyJdbcDriver">
-		<properties.derby.embedded databaseName="${server.config.dir}/derby/rtsDatabase/rtsdb" createDatabase="create"
-			 user="ilog" password="ilog"/>
+	<dataSource id="derbyEmbedded" isolationLevel="TRANSACTION_READ_COMMITTED" jndiName="jdbc/ilogDataSource" jdbcDriverRef="DerbyJdbcDriver">
+		<properties.derby.embedded databaseName="${server.config.dir}/derby/rtsDatabase/rtsdb" createDatabase="create" user="ilog" password="ilog"/>
 	</dataSource>
 
     <!-- Automatically expand WAR files and EAR files TJ Added switched to no -->
@@ -299,5 +293,19 @@
 			</security-role>
 		</application-bnd>
 	</application>
+	<!--TJ Added https://developer.ibm.com/wasdev/downloads/#asset/features-com.ibm.websphere.appserver.adminCenter-1.0 
+				https://developer.ibm.com/wasdev/docs/request-timing-diagnosing-slow-requests-liberty/-->
+	<requestTiming includeContextInfo="true" slowRequestThreshold="10s" hungRequestThreshold="5m" sampleRate="1"/>
+	<!-- Define your admin user name and password only when  no basicRegistry-->
+	<!--<quickStartSecurity userName="admin" userPassword="{xor}Lz4sLCgwLTs=" /> -->
+	<administrator-role>
+		<group>myAdmins</group>
+	</administrator-role>
+
+	<!-- Allows remote file access for config changes -->
+	<remoteFileAccess>
+	<writeDir>${server.config.dir}</writeDir>
+	</remoteFileAccess> 
+
 
 </server>
