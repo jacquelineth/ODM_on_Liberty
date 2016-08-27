@@ -6,13 +6,13 @@
 -Dcom.ibm.example.system.property=ExampleValue
 
 # Enable verbose output for class loading.
--verbose:class
+#-verbose:class
 
 # Enable verbose garbage collection.
 -verbose:gc
 
 # Specify an alternate verbose garbage collection log on IBM Java Virtual Machines only.
--Xverbosegclog:verbosegc.log
+#-Xverbosegclog:verbosegc.log
 
 # Specify additional verbose garbage collection options on HotSpot Java Virtual Machines only.
 -Xloggc:verbosegc.log

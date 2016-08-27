@@ -16,7 +16,12 @@ Thumbs.db
 [Bb]in
 [Dd]ebug*/
 *.sbr
-obj/
+servers/odm/workarea/*
+servers/odm/derby/*
+servers/odm/messaging/*
+servers/odm/tranlog/*
 [Rr]elease*/
 _ReSharper*/
 .sLock
+*.lck
+

@@ -10,6 +10,7 @@
 - Download Liberty , from [WASdev](https://developer.ibm.com/wasdev/getstarted/)
   - Unzip in a folder that would be the new WLP_USER_DIR
   - ~~create the instance with~~ ~~`bin\server.bat create odm`~~, you may use this zipped repo or checkout/clone git under usr/ folder.
+  - run `bin/installUtility install odm`,  to install all features that are referenced by this configuration 
   - Edit servers/odm/server.env to adjust  `JAVA_HOME` , `ODM_HOME` .
 
 
