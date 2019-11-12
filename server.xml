@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="ODM871server">
+
+    <!-- Enable features -->
+    <featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>jsp-2.3</feature>
+		<feature>jdbc-4.1</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>jaxrs-1.1</feature>       
+		<feature>concurrent-1.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>ssl-1.0</feature>
+		<!-- https://www.ibm.com/support/knowledgecenter/was_beta_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_ui_setup.html#twlp_ui_setup__uiconfserv -->
+		<feature>adminCenter-1.0</feature>
+
+		<!-- https://www.ibm.com/support/knowledgecenter/SSD28V_9.0.0/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_setup_osgi_console.html -->
+		<feature>osgiConsole-1.0</feature>
+    </featureManager>
+
+    <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
+    
+    <!-- For the keystore, default keys are generated and stored in a keystore. To provide the keystore password, generate an 
+         encoded password using bin/securityUtility encode and add it below in the password attribute of the keyStore element. 
+         Then uncomment the keyStore element. -->
+    
+    <keyStore id="defaultKeyStore" location="keystore.jks" type="JKS" password="{xor}KzAyPD4r"/> 
+    
+
+	
+    <!--For a user registry configuration, configure your user registry. For example, configure a basic user registry using the
+        basicRegistry element. Specify your own user name below in the name attribute of the user element. For the password, 
+        generate an encoded password using bin/securityUtility encode and add it in the password attribute of the user element. 
+        Then uncomment the user element. -->
+    <basicRegistry id="basic" realm="BasicRealm"> 
+        <user name="resAdmin" password="resAdmin"/>
+		<user name="resDeployer" password="resDeployer"/>
+		<user name="resMonitor" password="resMonitor"/>
+		<user name="rtsAdmin" password="rtsAdmin"/>
+		<user name="rtsAdmin1" password="rtsAdmin1"/>
+		<user name="rtsAdmin2" password="rtsAdmin2"/>
+		<user name="rtsConfig" password="rtsConfig"/>
+		<user name="rtsUser1" password="rtsUser1"/>
+		<user name="rtsUser2" password="rtsUser2"/>
+		<user name="rtsUser3" password="rtsUser3"/>
+		<user name="rtsUser4" password="rtsUser4"/>
+		<user name="rtsUser5" password="rtsUser5"/>
+		<user name="rtsUser6" password="rtsUser6"/>
+		<user name="Eli" password="Eli"/>
+		<user name="Val" password="Val"/>
+		<user name="joe" password="helloworld"/>
+		<user name="jack" password="helloworld"/>
+		<user name="averell" password="helloworld"/>
+		<user name="william" password="helloworld"/>
+		<user name="billy" password="helloworld"/>
+		<user name="phil" password="helloworld"/>
+		<user name="Paul" password="Paul"/>
+		<user name="Bea" password="Bea"/>
+		<user name="Abu" password="Abu"/>
+
+		<user name="admin" password="admin"/>
+
+		<group name="resAdministrators">
+			<member name="resAdmin"/>
+		</group>
+		<group name="resDeployers">
+			<member name="resAdmin"/>
+			<member name="resDeployer"/>
+		</group>
+		<group name="resMonitors">
+			<member name="resAdmin"/>
+			<member name="resDeployer"/>
+			<member name="resMonitor"/>
+		</group>
+		<group name="rtsAdministrator">
+			<member name="rtsAdmin"/>
+			<member name="rtsAdmin1"/>
+			<member name="rtsAdmin2"/>
+			<member name="averell"/>
+		</group>
+		<group name="rtsInstaller">
+			<member name="rtsAdmin"/>
+			<member name="rtsAdmin1"/>
+			<member name="rtsAdmin2"/>
+			<member name="rtsConfig"/>
+		</group>
+		<group name="rtsConfigManager">
+			<member name="rtsAdmin"/>
+			<member name="rtsAdmin1"/>
+			<member name="rtsAdmin2"/>
+			<member name="rtsConfig"/>
+		</group>
+		<group name="rtsUser">
+			<member name="rtsAdmin"/>
+			<member name="rtsAdmin1"/>
+			<member name="rtsAdmin2"/>
+			<member name="rtsConfig"/>
+			<member name="rtsUser1"/>
+			<member name="rtsUser2"/>
+			<member name="rtsUser3"/>
+			<member name="rtsUser4"/>
+			<member name="rtsUser5"/>
+			<member name="rtsUser6"/>
+			<member name="Eli"/>
+			<member name="Val"/>
+			<member name="william"/>
+			<member name="billy"/>
+			<member name="joe"/>
+			<member name="jack"/>
+			<member name="phil"/>
+			<member name="Paul"/>
+			<member name="Bea"/>
+			<member name="Abu"/>
+		</group>
+		<group name="Eligibility">
+			<member name="Eli"/>
+			<member name="Val"/>
+		</group>
+		<group name="Validator">
+			<member name="Val"/>
+		</group>
+		<group name="mycompany_insurancerules_admin">
+			<member name="william"/>
+		</group>
+		<group name="mycompany_car_insurance_PM">
+			<member name="billy"/>
+			<member name="joe"/>
+		</group>
+		<group name="mycompany_home_insurance_PM">
+			<member name="billy"/>
+			<member name="jack"/>
+		</group>
+		<group name="mycompany_rule_experts">
+			<member name="billy"/>
+			<member name="phil"/>
+		</group>
+		<group name="ruleViewer">
+			<member name="joe"/>
+		</group>
+		<group name="ruleEditor">
+			<member name="jack"/>
+		</group>
+    </basicRegistry>
+    
+    <httpSession cookieName="DCSESSIONID"/>
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g.  -->
+    <httpEndpoint id="defaultHttpEndpoint" host="*"
+                  httpPort="9080" httpsPort="9443"
+                  enableWelcomePage="true" onError="FAIL">
+		<tcpOptions soReuseAddr="true"/>
+	</httpEndpoint>
+                  
+    <variable name="defaultHostName" value="localhost"/>
+	<dataSource id="DefaultDataSource" jndiName="jdbc/ilogDataSource" type="javax.sql.DataSource">
+		<jdbcDriver libraryRef="OracleLib"    javax.sql.DataSource="oracle.jdbc.pool.OracleDataSource" />
+		<properties.oracle URL="jdbc:oracle:thin:@192.168.1.11:1521:xe" user="scott" password="tiger"/>
+	</dataSource>
+
+	<library id="OracleLib">
+		<fileset dir="C:/DevTools/JDBC/Oracle12"  includes="ojdbc7.jar"/>
+	</library>
+
+	<!-- Derby datasource definition -->
+	<jdbcDriver id="DerbyJdbcDriver" libraryRef="DerbyLib"/>
+	<library id="DerbyLib" filesetRef="DerbyFileset"/>
+	<fileset id="DerbyFileset" dir="${shared.resource.dir}" includes="derby.jar"/>
+    <!-- RES datasource -->
+	<dataSource id="jdbc/resdatasource" jndiName="jdbc/resdatasource" jdbcDriverRef="DerbyJdbcDriver">
+		<properties databaseName="${server.config.dir}/derby/resDatabase/resdb871" createDatabase="create"
+			 user="RES" password="RES"/>
+	</dataSource>
+	<!-- ILOG datasource -->
+	<!-- <dataSource id="derbyEmbedded" isolationLevel="TRANSACTION_READ_COMMITTED" jndiName="jdbc/ilogDataSource"
+		 jdbcDriverRef="DerbyJdbcDriver">
+		<properties.derby.embedded databaseName="${server.config.dir}/derby/rtsDatabase/rtsdb871" createDatabase="create"
+			 user="ilog" password="ilog"/>
+	</dataSource> -->
+
+    <!-- Automatically expand WAR files and EAR files TJ Added switched to no -->
+    <applicationManager autoExpand="false"/>
+
+	<webContainer deferServletLoad="false" enableDefaultIsElIgnoredInTag="true" enableJspMappingOverride="true"/>
+	<applicationMonitor updateTrigger="mbean"/>
+	<!-- RES console -->
+	<!-- <application type="war" id="res" name="res" location="${ODM_HOME}\executionserver\applicationservers\WLP855\res.war">
+		<application-bnd>
+			<security-role name="resAdministrators">
+				<group name="resAdministrators"/>
+			</security-role>
+			<security-role name="resDeployers">
+				<group name="resDeployers"/>
+			</security-role>
+			<security-role name="resMonitors">
+				<group name="resMonitors"/>
+			</security-role>
+		</application-bnd>
+	</application> -->
+	<!-- HTDS -->
+	<!-- <application type="war" id="DecisionService" name="DecisionService" location="${ODM_HOME}\executionserver\applicationservers\WLP855\DecisionService.war"/> -->
+	<!-- SSP -->
+	<!-- <application type="war" id="testing" name="testing" location="${ODM_HOME}\executionserver\applicationservers\WLP855\testing.war">
+		<application-bnd>
+			<security-role name="resAdministrators">
+				<group name="resAdministrators"/>
+			</security-role>
+			<security-role name="resDeployers">
+				<group name="resDeployers"/>
+			</security-role>
+		</application-bnd>
+	</application> -->
+	<!-- Decision Runner -->
+	<!-- Managed executor service for Decision Runner -->
+	<managedExecutorService jndiName="concurrent/drExecutorService"/>
+
+	<!-- <application type="war" id="DecisionRunner" name="DecisionRunner" location="${ODM_HOME}\executionserver\applicationservers\WLP855\DecisionRunner.war">
+		<application-bnd>
+			<security-role name="resAdministrators">
+				<group name="resAdministrators"/>
+			</security-role>
+			<security-role name="resDeployers">
+				<group name="resDeployers"/>
+			</security-role>
+		</application-bnd>
+	</application> -->
+
+	<!-- Decision Center -->
+	<application type="war" id="decisioncenter" name="decisioncenter" location="${ODM_HOME}\teamserver\applicationservers\WLP855\decisioncenter.war">
+		<application-bnd>
+			<security-role name="rtsAdministrator">
+				<group name="rtsAdministrator"/>
+			
+				<group name="management"/>
+			</security-role>
+			<security-role name="rtsInstaller">
+				<group name="rtsInstaller"/>
+			</security-role>
+			<security-role name="rtsConfigManager">
+				<group name="rtsConfigManager"/>
+			</security-role>
+			<security-role name="rtsUser">
+				<group name="rtsUser"/>
+			</security-role>
+			<security-role name="Eligibility">
+				<group name="Eligibility"/>
+			</security-role>
+			<security-role name="Validator">
+				<group name="Validator"/>
+			</security-role>
+			<security-role name="mycompany_insurancerules_admin">
+				<group name="mycompany_insurancerules_admin"/>
+			</security-role>
+			<security-role name="mycompany_car_insurance_PM">
+				<group name="mycompany_car_insurance_PM"/>
+			</security-role>
+			<security-role name="mycompany_home_insurance_PM">
+				<group name="mycompany_home_insurance_PM"/>
+			</security-role>
+			<security-role name="mycompany_rule_experts">
+				<group name="mycompany_rule_experts"/>
+			</security-role>
+			<security-role name="ruleViewer">
+				<group name="ruleViewer"/>
+			</security-role>
+			<security-role name="ruleEditor">
+				<group name="ruleEditor"/>
+			</security-role>
+		</application-bnd>
+	</application>
+	<!-- Team Server -->
+	<application type="war" id="teamserver" name="teamserver" location="${ODM_HOME}\teamserver\applicationservers\WLP855\teamserver.war">
+		<application-bnd>
+			<security-role name="rtsAdministrator">
+				<group name="rtsAdministrator"/>
+			</security-role>
+			<security-role name="rtsInstaller">
+				<group name="rtsInstaller"/>
+			</security-role>
+			<security-role name="rtsConfigManager">
+				<group name="rtsConfigManager"/>
+			</security-role>
+			<security-role name="rtsUser">
+				<group name="rtsUser"/>
+			</security-role>
+			<security-role name="Eligibility">
+				<group name="Eligibility"/>
+			</security-role>
+			<security-role name="Validator">
+				<group name="Validator"/>
+			</security-role>
+			<security-role name="mycompany_insurancerules_admin">
+				<group name="mycompany_insurancerules_admin"/>
+			</security-role>
+			<security-role name="mycompany_car_insurance_PM">
+				<group name="mycompany_car_insurance_PM"/>
+			</security-role>
+			<security-role name="mycompany_home_insurance_PM">
+				<group name="mycompany_home_insurance_PM"/>
+			</security-role>
+			<security-role name="mycompany_rule_experts">
+				<group name="mycompany_rule_experts"/>
+			</security-role>
+			<security-role name="ruleViewer">
+				<group name="ruleViewer"/>
+			</security-role>
+			<security-role name="ruleEditor">
+				<group name="ruleEditor"/>
+			</security-role>
+		</application-bnd>
+	</application>
+   <!-- Assign 'admin' to Administrator for AdminCenter-->
+   <administrator-role>
+      <user>admin</user>
+   </administrator-role>
+   <!--remove DVS serialization messages  https://w3-connections.ibm.com/forums/html/topic?id=e52d534f-7f3c-4306-a479-0ecbc5dfa247 -->
+   <logging traceSpecification="com.ibm.rules.res.dvs=audit:org.apache.solr.*=warning" /> 
+
+
+</server>
