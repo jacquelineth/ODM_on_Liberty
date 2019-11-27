@@ -1,0 +1,7 @@
+/apps/
+/logs/
+/data/
+/workarea/
+/tranlog/
+res-console*.log
+/resources/
