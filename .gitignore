@@ -1,7 +1,7 @@
-/apps/
-/logs/
+/logs
 /data/
-/workarea/
+/apps/
 /tranlog/
-res-console*.log
-/resources/
+/workarea/
+/res-console*.log
+/resources/security/

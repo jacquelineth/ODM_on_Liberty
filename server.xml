@@ -1,60 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Licensed Materials - Property of IBM                           -->
-<!-- 5725-B69 5655-Y17 5655-Y31                                     -->
-<!-- Copyright IBM Corp. 1987, 2018. All Rights Reserved            -->
-<!-- US Government Users Restricted Rights - Use, duplication or    -->
-<!-- disclosure restricted by GSA ADP Schedule Contract with        -->
-<!-- IBM Corp.                                                      -->
-
-<server description="ODM Sample Server">
-
+<server description="new server">
 	<!-- Enable features -->
 	<featureManager>
+		<!-- <feature>javaee-7.0</feature> -->
 		<feature>servlet-3.1</feature>
 		<feature>jsp-2.3</feature>
 		<feature>jdbc-4.1</feature>
 		<feature>appSecurity-2.0</feature>
-		<feature>jaxrs-2.0</feature>
+		<feature>jaxrs-1.1</feature>       
+		<feature>concurrent-1.0</feature>
 		<feature>jndi-1.0</feature>
 		<feature>ssl-1.0</feature>
-		<!-- For Decision Runner -->
-		<feature>concurrent-1.0</feature>
-		<!-- For secure JMX connection -->
-		<feature>restConnector-2.0</feature>
-		<feature>localConnector-1.0</feature>
-		<!-- For json parsing used in miniloan-server -->
-		<feature>jsonp-1.0</feature>
-	    <feature>ldapRegistry-3.0</feature>
+		<!-- https://www.ibm.com/support/knowledgecenter/was_beta_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_ui_setup.html#twlp_ui_setup__uiconfserv -->
+		<!-- <feature>adminCenter-1.0</feature> -->
+
+		<!-- https://www.ibm.com/support/knowledgecenter/SSD28V_9.0.0/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_setup_osgi_console.html -->
+		<!-- <feature>osgiConsole-1.0</feature> -->
 	</featureManager>
+	<!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
+	<!-- For the keystore, default keys are generated and stored in a keystore. To provide the keystore password, generate an 
+         encoded password using bin/securityUtility encode and add it below in the password attribute of the keyStore element. 
+         Then uncomment the keyStore element. -->
 
-	<webAppSecurity  includePathInWASReqURL="true"/>
+    <keyStore id="defaultKeyStore" location="keystore.jks" type="JKS" password="{xor}KzAyPD4r"/> 
 
+	<!--For a user registry configuration, configure your user registry. For example, configure a basic user registry using the
+        basicRegistry element. Specify your own user name below in the name attribute of the user element. For the password, 
+        generate an encoded password using bin/securityUtility encode and add it in the password attribute of the user element. 
+        Then uncomment the user element. -->
+	<webAppSecurity includePathInWASReqURL="true"/>
 	<webContainer deferServletLoad="false" enableDefaultIsElIgnoredInTag="true" enableJspMappingOverride="true"/>
 	<applicationMonitor updateTrigger="mbean"/>
-
-	<httpSession
-				 securityIntegrationEnabled="false"
-				 idReuse="true"
-				 useContextRootAsCookiePath="true"
-				 invalidateOnUnauthorizedSessionRequestException="true" />
-
+	<httpSession securityIntegrationEnabled="false" idReuse="true" useContextRootAsCookiePath="true" invalidateOnUnauthorizedSessionRequestException="true" />
 	<!-- To access this server from a remote client add a host attribute to
 		the following element, e.g. host="*" -->
-	<httpEndpoint id="defaultHttpEndpoint"
-				  host="localhost"
-				  httpPort="9090"
-				  httpsPort="9443" />
-
+	<httpEndpoint id="defaultHttpEndpoint" httpPort="9080" host="localhost" httpsPort="9443" />
 	<!-- Automatically expand WAR files and EAR files -->
 	<!-- <applicationManager autoExpand="true"/> -->
 
+
+	<!-- <library id="DerbyLib" filesetRef="DerbyFileset" />
+	<fileset id="DerbyFileset" dir="${shared.resource.dir}" includes="derbyclient.jar" />
 	<library id="H2Lib" filesetRef="H2Fileset" />
-	<fileset id="H2Fileset"
-			 dir="${shared.resource.dir}"
-			 includes="h2.jar" />
+	<fileset id="H2Fileset" dir="${shared.resource.dir}" includes="h2.jar" /> -->
+	<!--  RES  -->
+	<!-- <dataSource id="resdataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jndiName="jdbc/resdatasource" type="javax.sql.ConnectionPoolDataSource">
+		<jdbcDriver libraryRef="DerbyLib"/>
+		<properties.derby.client databaseName="resDb88" serverName="localhost" portNumber="1527" user="resdbAdmin" password="resdbAdmin" traceLevel="5" derby.locks.deadlockTrace="true" />
+	</dataSource> -->
+	<!--  Decision center -->
+	<variable name="defaultHostName" value="localhost"/>
+	<dataSource id="jdbc/ilogDataSource" jndiName="jdbc/ilogDataSource" type="javax.sql.DataSource">
+			<jdbcDriver javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
+						javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
+						javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
+						libraryRef="H2Lib"/>
+		<properties URL="jdbc:h2:${server.config.dir}/data/h2/rtsdb46288;MODE=Oracle;AUTO_SERVER=TRUE"
+						user="ilog"
+						password="ilog"/>
+		<!-- <jdbcDriver libraryRef="OracleLib"    javax.sql.DataSource="oracle.jdbc.pool.OracleDataSource" />
+		<properties.oracle URL="jdbc:oracle:thin:@192.168.99.100:32769:xe" user="scott" password="tiger"/> -->
+	</dataSource>
+<!-- 
+	<library id="OracleLib">
+		<fileset dir="C:/DevTools/JDBC/Oracle12"  includes="ojdbc7.jar"/>
+	</library> -->
 
+	<library id="H2Lib" filesetRef="H2Fileset" />
+	<fileset id="H2Fileset" dir="${shared.resource.dir}" includes="h2.jar" />
+	<!--  Decision center -->
+	<dataSource id="jdbc/ilogDataSource"
+					isolationLevel="TRANSACTION_READ_COMMITTED"
+					jndiName="jdbc/ilogDataSource"
+					type="javax.sql.ConnectionPoolDataSource">
+		<jdbcDriver javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
+						javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
+						javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
+						libraryRef="H2Lib"/>
+		<properties URL="jdbc:h2:${server.config.dir}/data/h2/rtsdb;MODE=HSQLDB;auto_server=true"
+						user="ilog"
+						password="ilog"/>
+	</dataSource>
 
-	<!-- RES data source -->
 	<dataSource id="jdbc/resdatasource"
 					isolationLevel="TRANSACTION_READ_COMMITTED"
 					jndiName="jdbc/resdatasource"
@@ -67,211 +94,261 @@
 						user="ilog"
 						password="ilog"/>
 	</dataSource>
+	<!-- Declare the jar files for Derby access through JDBC. -->
+	<library id="derbyLib">
+	<fileset dir="C:/DevTools/apache-derby-10.14.2.0/lib" includes="derbyclient.jar" />
+	</library>
 
 
-	<!--  Decision center -->
-	<dataSource id="jdbc/ilogDataSource"
-					isolationLevel="TRANSACTION_READ_COMMITTED"
-					jndiName="jdbc/ilogDataSource"
-					type="javax.sql.ConnectionPoolDataSource">
-		<jdbcDriver javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
-						javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
-						javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
-						libraryRef="H2Lib"/>
-		<properties URL="jdbc:h2:${server.config.dir}/data/h2/rtsdb;MODE=HSQLDB;auto_server=true"
-						createDatabase="true"
-						user="ilog"
-						password="ilog"/>
-	</dataSource>
+<!-- Declare the Derby network  database -->
+	<!-- <dataSource id="jdbc/resdatasource" jndiName="jdbc/resdatasource" isolationLevel="TRANSACTION_READ_COMMITTED" type="javax.sql.ConnectionPoolDataSource"  >
+	<jdbcDriver libraryRef="derbyLib" 
+				javax.sql.XADataSource="org.apache.derby.jdbc.ClientXADataSource" 
+				javax.sql.ConnectionPoolDataSource="org.apache.derby.jdbc.ClientConnectionPoolDataSource40"/>
+	<properties.derby.client url="jdbc:derby://localhost:1527/resdb" password="resdbUser" user="resdbUser" portNumber="1527"
+databaseName="resdb" serverName="localhost"   shutdownDatabase="false" />
+	<connectionManager connectionTimeout="180" 
+						maxPoolSize="10" minPoolSize="1" 
+						reapTime="180" maxIdleTime="1800" 
+						agedTimeout="7200" purgePolicy="EntirePool" />
+	</dataSource> -->
 
-	<dataSource id="jdbc/serverextendedbrm"
-					isolationLevel="TRANSACTION_READ_COMMITTED"
-					jndiName="jdbc/serverextendedbrm"
-					type="javax.sql.ConnectionPoolDataSource">
-		<jdbcDriver javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
-						javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
-						javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
-						libraryRef="H2Lib"/>
-		<properties URL="jdbc:h2:${server.config.dir}/data/h2/rtsdb-serverextendedbrm;MODE=HSQLDB;auto_server=true"
-						createDatabase="create"
-						user="ilog"
-						password="ilog"/>
-	</dataSource>
 
 	<!-- Web application security -->
 	<basicRegistry id="basic" realm="customRealm">
-		<user name="resAdmin" password="resAdmin" />
-		<user name="resDeploy" password="resDeploy" />
-		<user name="resMonitor" password="resMonitor" />
-
-		<group name="resAdministrators">
-			<member name="resAdmin" />
-		</group>
-		<group name="resDeployers">
-			<member name="resAdmin" />
-			<member name="resDeploy" />
-		</group>
-		<group name="resMonitors">
-			<member name="resAdmin" />
-			<member name="resDeploy" />
-			<member name="resMonitor" />
-		</group>
+	  	<user name="resAdmin" password="resAdmin"/>
+		<user name="resDeployer" password="resDeployer"/>
+		<user name="resMonitor" password="resMonitor"/>
 		<user name="rtsAdmin" password="rtsAdmin" />
 		<user name="rtsConfig" password="rtsConfig" />
 		<user name="rtsUser1" password="rtsUser1" />
 		<user name="Bea" password="Bea" />
 		<user name="Paul" password="Paul" />
-		<user name="rmtuser" password="rmtuser" />
+		<user name="Diane" password="Diane" />
 		<user name="Val" password="Val" />
-        <user name="Eli" password="Eli" />
-
-		<group name="AdminGroup">
+		<user name="Eli" password="Eli" />
+		<user name="rmtuser" password="rmtuser" />
+		<group name="rtsAdministrator">
 			<member name="rtsAdmin" />
 			<member name="Paul" />
 		</group>
-		<group name="InstallGroup">
+		<group name="rtsInstaller">
 			<member name="rtsAdmin" />
 		</group>
-		<group name="ConfigGroup">
+		<group name="rtsConfigManager">
 			<member name="rtsConfig" />
 		</group>
-
+		<group name="rtsUser">
+			<member name="rtsUser1" />
+			<member name="Bea" />
+			<member name="Val" />
+			<member name="Eli" />
+			<member name="rmtuser" />
+		</group>
+		<group name="Eligibility">
+			<member name="Val" />
+			<member name="Eli" />
+		</group>
+		<group name="Validator">
+			<member name="Val" />
+		</group>
+		<group name="rmtUserGroup">
+			<member name="rmtuser" />
+		</group>
+		<group name="resAdministrators">
+			<member name="resAdmin"/>
+		</group>
+		<group name="resDeployers">
+			<member name="resAdmin"/>
+			<member name="resDeployer"/>
+		</group>
+		<group name="resMonitors">
+			<member name="resAdmin"/>
+			<member name="resDeployer"/>
+			<member name="resMonitor"/>
+		</group>
+		<group name="COMMODITY_RESTRICTIONS_APPROVER">
+			<member name="Paul"/>
+		</group>
+		<group name="COMMODITY_RESTRICTIONS_OWNER">
+			<member name="Paul"/>
+		</group>
+		<group name="COMMODITY_RESTRICTIONS_SUPPORT">
+			<member name="Paul"/>
+		</group>
+		<group name="COMMODITY_RESTRICTIONS_TESTER">
+			<member name="Paul"/>
+		</group>
+		<group name="DS_Intermodal_Deadline_OWNER">
+			<member name="Paul"/>
+		</group>
+		<group name="DS_Intermodal_Deadline_SUPPORT">
+			<member name="Paul"/>
+		</group>
+		<group name="DS_Intermodal_Deadline_USER">
+			<member name="Paul"/>
+		</group>
+		<group name="DS_Marine_Deadline_OWNER">
+			<member name="Paul"/>
+			<member name="Diane"/>
+		</group>
+		<group name="DS_Marine_Deadline_SUPPORT">
+			<member name="Paul"/>
+		</group>
+		<group name="DS_Marine_Deadline_USER">
+			<member name="Paul"/>
+		</group>
+		<group name="DeliveryOrder_InputReady_AUTHOR">
+			<member name="Paul"/>
+		</group>
+		<group name="DeliveryOrder_InputReady_OWNER">
+			<member name="Paul"/>
+		</group>
+		<group name="DeliveryOrder_InputReady_SUPPORT">
+			<member name="Paul"/>
+		</group>
+		<group name="DeliveryOrder_InputReady_VIEWER">
+			<member name="Paul"/>
+		</group>
+		<group name="Demo">
+			<member name="Paul"/>
+		</group>
+		<group name="DnDPayers_APPROVER">
+			<member name="Paul"/>
+		</group>
+		<group name="DnDPayers_OWNER">
+			<member name="Paul"/>
+		</group>
+		<group name="DnDPayers_SUPPORT">
+			<member name="Paul"/>
+		</group>
+		<group name="DnDPayers_USER">
+			<member name="Paul"/>
+		</group>
+		<group name="QBA_Approval_Approver">
+			<member name="Paul"/>
+		</group>
+		<group name="QBA_Approval_Author">
+			<member name="Paul"/>
+		</group>
+		<group name="QBA_Approval_Owner">
+			<member name="Paul"/>
+		</group>
+		<group name="QBA_Approval_Support">
+			<member name="Paul"/>
+		</group>
+		<group name="QBA_Approval_Tester">
+			<member name="Paul"/>
+		</group>
+		<group name="QBA_Approval_Viewer">
+			<member name="Paul"/>
+		</group>
+		<group name="TEP-Approver">
+			<member name="Paul"/>
+		</group>
+		<group name="TEP-Owner">
+			<member name="Paul"/>
+		</group>
+		<group name="TEP-Support">
+			<member name="Paul"/>
+		</group>
+		<group name="TEP_User">
+			<member name="Paul"/>
+		</group>
+		<group name="TNM_AFR_WCA">
+			<member name="Paul"/>
+		</group>
+		<group name="TNM_East_West">
+			<member name="Paul"/>
+		</group>
+		<group name="TNM_LAM_OCE">
+			<member name="Paul"/>
+		</group>
+		<group name="TNM_SEAGO">
+			<member name="Paul"/>
+		</group>
+		
 	</basicRegistry>
 
-	<!-- RES console -->
-	<application type="war" id="res" name="res"
-		location="\${server.config.dir}apps/res.war">
-		<application-bnd>
-			<security-role name="resAdministrators">
-				<group name="resAdministrators" />
-			</security-role>
-			<security-role name="resDeployers">
-				<group name="resDeployers" />
-			</security-role>
-			<security-role name="resMonitors">
-				<group name="resMonitors" />
-			</security-role>
-		</application-bnd>
-	</application>
-
 	<!-- ODM Enterprise Console (Teamserver) -->
-	<application id="teamserver" location="\${server.config.dir}apps/teamserver.war"
-		name="teamserver" type="war">
+	<application id="teamserver" location="${server.config.dir}/apps/teamserver.war" name="teamserver" type="war">
 		<application-bnd>
 			<security-role name="rtsAdministrator">
-				<group name="AdminGroup" />
+				<group name="rtsAdministrator" />
 			</security-role>
 			<security-role name="rtsInstaller">
-				<group name="InstallGroup" />
+				<group name="rtsInstaller" />
 			</security-role>
 			<security-role name="rtsConfigManager">
-				<group name="ConfigGroup" />
+				<group name="rtsConfigManager" />
 			</security-role>
-			<security-role name="rtsUser">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
-
-	<!-- Business console -->
-	<application type="war" id="decisioncenter" name="decisioncenter"
-		location="\${server.config.dir}apps/decisioncenter.war">
-		<application-bnd>
-			<security-role name="rtsAdministrator">
-				<group name="AdminGroup" />
-			</security-role>
-			<security-role name="rtsInstaller">
-				<group name="InstallGroup" />
-			</security-role>
-			<security-role name="rtsConfigManager">
-				<group name="ConfigGroup" />
-			</security-role>
-			<security-role name="rtsUser">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
-
-	<!-- DC REST API -->
-	<application type="war" id="decisioncenter-api" name="decisioncenter-api"
-		location="\${server.config.dir}apps/decisioncenter-api.war">
-		<application-bnd>
-			<security-role name="rtsAdministrator">
-				<group name="AdminGroup" />
-			</security-role>
-			<security-role name="rtsInstaller">
-				<group name="InstallGroup" />
-			</security-role>
-			<security-role name="rtsConfigManager">
-				<group name="ConfigGroup" />
-			</security-role>
-			<security-role name="rtsUser">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
-
-
-	<!-- SSP -->
-	<application type="war" id="testing" name="testing"
-		location="\${server.config.dir}apps/testing.war">
-		<application-bnd>
-			<security-role name="resAdministrators">
-				<group name="resAdministrators" />
-			</security-role>
-			<security-role name="resDeployers">
-				<group name="resDeployers" />
-			</security-role>
-		</application-bnd>
-	</application>
-
-
-	<!-- Managed executor service for Decision Runner -->
-	<managedExecutorService jndiName="concurrent/drExecutorService" />
-
-	<!-- Decision Runner -->
-	<application type="war" id="DecisionRunner" name="DecisionRunner"
-		location="\${server.config.dir}apps/DecisionRunner.war">
-		<application-bnd>
-			<security-role name="resAdministrators">
-				<group name="resAdministrators" />
-			</security-role>
-			<security-role name="resDeployers">
-				<group name="resDeployers" />
-			</security-role>
-		</application-bnd>
-	</application>
-
-
-	<!-- HTDS -->
-	<application type="war" id="DecisionService" name="DecisionService"
-		location="\${server.config.dir}apps/DecisionService.war">
-	</application>
-
-	<!-- JEE rule session sample -->
-	<application type="war" id="rulesession" name="rulesession"
-		location="\${server.config.dir}apps/miniloan-rest.war">
-	</application>
-
-	<application type="war" id="dcclient" name="dcclient"
-		location="\${server.config.dir}apps/dcclient.war">
-		<application-bnd>
 			<security-role name="rtsUser">
 				<group name="rtsUser" />
 			</security-role>
 		</application-bnd>
 	</application>
-
-	<application type="war" id="miniloan-server" name="miniloan-server"
-		location="\${server.config.dir}apps/miniloan-server.war">
+	<!-- Business console -->
+	<application type="war" id="decisioncenter" name="decisioncenter" location="${server.config.dir}/apps/decisioncenter.war">
 		<application-bnd>
-			<security-role name="resAdministrators">
-				<group name="resAdministrators" />
+			<security-role name="rtsAdministrator">
+				<group name="rtsAdministrator" />
+			</security-role>
+			<security-role name="rtsInstaller">
+				<group name="rtsInstaller" />
+			</security-role>
+			<security-role name="rtsConfigManager">
+				<group name="rtsConfigManager" />
+			</security-role>
+			<security-role name="rtsUser">
+				<group name="rtsUser" />
+				<group name="DS_Marine_Deadline_OWNER"/>
 			</security-role>
 		</application-bnd>
 	</application>
-	<keyStore id="defaultKeyStore" password="odmAdmin" />
-	<administrator-role> <group>resAdministrators</group> </administrator-role>
+	<!-- Managed executor service for Decision Runner -->
+	<managedExecutorService jndiName="concurrent/drExecutorService" />
+		<!-- RES console -->
+	<application type="war" id="res" name="res" location="${server.config.dir}/apps/res.war">
+		<application-bnd>
+			<security-role name="resAdministrators">
+				<group name="resAdministrators"/>
+			</security-role>
+			<security-role name="resDeployers">
+				<group name="resDeployers"/>
+			</security-role>
+			<security-role name="resMonitors">
+				<group name="resMonitors"/>
+			</security-role>
+		</application-bnd>
+	</application>
+	<!-- HTDS -->
+	<application type="war" id="DecisionService" name="DecisionService" location="${server.config.dir}/apps/DecisionService.war"/>
+	<!-- SSP -->
+	<!-- <application type="war" id="testing" name="testing" location="${server.config.dir}/apps/testing.war">
+		<application-bnd>
+			<security-role name="resAdministrators">
+				<group name="resAdministrators"/>
+			</security-role>
+			<security-role name="resDeployers">
+				<group name="resDeployers"/>
+			</security-role>
+		</application-bnd>
+	</application> -->
+	<!-- Decision Runner -->
 
-<logging traceSpecification="*=audit:com.ibm.rules.res.htds=all"/>
+
+	<!-- <application type="war" id="DecisionRunner" name="DecisionRunner" location="${server.config.dir}/apps/DecisionRunner.war">
+		<application-bnd>
+			<security-role name="resAdministrators">
+				<group name="resAdministrators"/>
+			</security-role>
+			<security-role name="resDeployers">
+				<group name="resDeployers"/>
+			</security-role>
+		</application-bnd>
+	</application> -->
+
+	<!-- <logging traceSpecification="*=all:com.ibm.rules.res.xu.*=all:com.ibm.rules.res.dvs=all:com.ibm.rules.support.res.*=all:org.apache.solr.*=warning" />  -->
+	<!-- <logging traceSpecification="com.ibm.rules.res.execution.*=all:com.ibm.rules.res.mbean.*=all:com.ibm.rules.res.xu.*=all:com.ibm.rules.res.dvs=all:com.ibm.rules.support.res.*=all:org.apache.solr.*=warning" />  -->
+	<!-- <logging traceSpecification="com.ibm.rules.*=all" />  -->
 </server>
