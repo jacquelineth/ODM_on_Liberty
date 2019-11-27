@@ -1,21 +1,6 @@
-# TJ Added Default definitions from http://www.ibm.com/support/knowledgecenter/SSEQTP_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_admin_customvars.html
-# Set the maximum heap size to 1024m.
--Xmx1024m
-
-# Set a system property.
--Dcom.ibm.example.system.property=ExampleValue
-
-# Enable verbose output for class loading.
-#-verbose:class
-
-# Enable verbose garbage collection.
--verbose:gc
-
-# Specify an alternate verbose garbage collection log on IBM Java Virtual Machines only.
-#-Xverbosegclog:verbosegc.log
-
-# Specify additional verbose garbage collection options on HotSpot Java Virtual Machines only.
--Xloggc:verbosegc.log
--XX:+PrintGCDetails
--XX:+PrintGCTimeStamps
--XX:+PrintHeapAtGC
+-Xms1024m
+-Xmx3584m
+-Xmn256m
+-XX:MaxMetaspaceSize=512m
+-Dclient.encoding.override=UTF-8
+-Dfile.encoding=UTF-8
